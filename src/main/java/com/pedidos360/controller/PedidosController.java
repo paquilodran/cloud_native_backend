@@ -4,7 +4,7 @@ import com.pedidos360.entity.Pedido;
 import com.pedidos360.repository.PedidoRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,13 +25,13 @@ public class PedidosController {
     }
 
     @GetMapping
-    @Secured("ROLE_AUTHENTICATED")
+    @PreAuthorize("hasAuthority('SCOPE_access_as_user')")
     public List<Pedido> getPedidos() {
         return pedidoRepository.findAll();
     }
 
     @PostMapping
-    @Secured("ROLE_AUTHENTICATED")
+    @PreAuthorize("hasAuthority('SCOPE_access_as_user')")
     @ResponseStatus(HttpStatus.CREATED)
     public Pedido createPedido(@Valid @RequestBody Pedido pedido) {
         pedido.setId(null);
