@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Pedidos360 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "access_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health (público)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/public/health"
+      }
+    },
+    {
+      "name": "GET pedidos SIN token → 401",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/pedidos"
+      }
+    },
+    {
+      "name": "GET pedidos token inválido → 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer token-invalido" }
+        ],
+        "url": "{{baseUrl}}/api/pedidos"
+      }
+    },
+    {
+      "name": "GET pedidos CON token → 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": "{{baseUrl}}/api/pedidos"
+      }
+    },
+    {
+      "name": "POST pedido CON token → 201",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Pedido demo Postman\",\n  \"cliente\": \"Cliente QA\",\n  \"estado\": \"CREADO\",\n  \"total\": 9900.00\n}"
+        },
+        "url": "{{baseUrl}}/api/pedidos"
+      }
+    }
+  ]
+}

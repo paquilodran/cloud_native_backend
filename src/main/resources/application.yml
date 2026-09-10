@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pedidos360-backend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:h2}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+azure:
+  activedirectory:
+    tenant-id: ${AZURE_TENANT_ID:00000000-0000-0000-0000-000000000000}
+    client-id: ${AZURE_API_CLIENT_ID:00000000-0000-0000-0000-000000000000}
+    app-id-uri: ${AZURE_API_APP_ID_URI:api://00000000-0000-0000-0000-000000000000}
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    url: jdbc:h2:mem:pedidos360;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pedidos360_db}
+    username: ${DB_USERNAME:pedidos}
+    password: ${DB_PASSWORD:pedidos}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

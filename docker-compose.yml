@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pedidos360-db
+    environment:
+      POSTGRES_DB: pedidos360_db
+      POSTGRES_USER: pedidos
+      POSTGRES_PASSWORD: pedidos
+    ports:
+      - "5432:5432"
+    volumes:
+      - pedidos360_pg:/var/lib/postgresql/data
+
+volumes:
+  pedidos360_pg:

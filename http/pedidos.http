@@ -1,0 +1,26 @@
+### Salud pública (sin token) — debe devolver 200
+GET http://localhost:8080/api/public/health
+
+### GET pedidos SIN token — debe devolver 401
+GET http://localhost:8080/api/pedidos
+
+### GET pedidos CON token inválido — 401
+GET http://localhost:8080/api/pedidos
+Authorization: Bearer token-invalido
+
+### GET pedidos CON token válido — 200 + JSON
+# Pegar el access token de Azure AD (no el id_token)
+GET http://localhost:8080/api/pedidos
+Authorization: Bearer {{access_token}}
+
+### POST crear pedido CON token — 201
+POST http://localhost:8080/api/pedidos
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "nombre": "Pedido demo Postman",
+  "cliente": "Cliente QA",
+  "estado": "CREADO",
+  "total": 9900.00
+}
