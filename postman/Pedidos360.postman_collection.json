@@ -5,11 +5,12 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8080" },
-    { "key": "access_token", "value": "" }
+    { "key": "access_token", "value": "" },
+    { "key": "token_sin_scope", "value": "" }
   ],
   "item": [
     {
-      "name": "Health (público)",
+      "name": "1. Health (público) → 200",
       "request": {
         "method": "GET",
         "header": [],
@@ -17,7 +18,7 @@
       }
     },
     {
-      "name": "GET pedidos SIN token → 401",
+      "name": "2. GET pedidos SIN token → 401 Unauthorized",
       "request": {
         "method": "GET",
         "header": [],
@@ -25,7 +26,7 @@
       }
     },
     {
-      "name": "GET pedidos token inválido → 401",
+      "name": "3. GET pedidos token inválido → 401 Unauthorized",
       "request": {
         "method": "GET",
         "header": [
@@ -35,7 +36,17 @@
       }
     },
     {
-      "name": "GET pedidos CON token → 200",
+      "name": "4. GET pedidos token SIN scope access_as_user → 403 Forbidden",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token_sin_scope}}" }
+        ],
+        "url": "{{baseUrl}}/api/pedidos"
+      }
+    },
+    {
+      "name": "5. GET pedidos CON token válido → 200 OK",
       "request": {
         "method": "GET",
         "header": [
@@ -45,7 +56,7 @@
       }
     },
     {
-      "name": "POST pedido CON token → 201",
+      "name": "6. POST pedido CON token válido → 201 Created",
       "request": {
         "method": "POST",
         "header": [

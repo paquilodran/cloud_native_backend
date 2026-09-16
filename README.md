@@ -98,34 +98,56 @@ Perfil `postgres`: `docker compose up -d` y `SPRING_PROFILES_ACTIVE=postgres`.
 
 ## 6. Puesta en marcha
 
-JDK 17 + Maven 3.9+.
+Requisito: JDK 17.
+
+### Opción A: Local con Maven Wrapper (Recomendado)
 
 ```powershell
 $env:AZURE_TENANT_ID="4531cbe0-83c7-406d-a972-e6302b1fb7d1"
 $env:AZURE_API_CLIENT_ID="3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
 $env:AZURE_API_APP_ID_URI="api://3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
-mvn spring-boot:run
+
+# Ejecutar la aplicación
+.\mvnw.cmd spring-boot:run
+
+# Ejecutar suite de pruebas de seguridad automatizadas (MockMvc)
+.\mvnw.cmd test
 ```
 
+### Opción B: Con Docker
+
 ```bash
-curl http://localhost:8080/api/public/health
+docker build -t pedidos360-backend .
+docker run -p 8080:8080 -e AZURE_TENANT_ID="4531cbe0-83c7-406d-a972-e6302b1fb7d1" pedidos360-backend
+```
+
+O levantar la solución completa desde la raíz con:
+```bash
+docker compose up --build
 ```
 
 ---
 
 ## 7. Evidencias de este repositorio
 
-Importar `postman/Pedidos360.postman_collection.json` o `http/pedidos.http`.
+Suite de pruebas automatizadas en `src/test/java/com/pedidos360/SecurityTests.java`:
+- Validación de endpoint público `/api/public/health` (200 OK)
+- Validación sin token (401 Unauthorized estructurado en JSON)
+- Validación con Bearer token mal formado (401 Unauthorized estructurado en JSON)
+- Validación con token sin scope `access_as_user` (403 Forbidden estructurado en JSON)
+- Validación con token y scope `access_as_user` (200 OK)
+- Creación de pedido con scope válido (201 Created)
+
+Para pruebas manuales, importar `postman/Pedidos360.postman_collection.json` o usar `http/pedidos.http`:
 
 | Request | Token | Resultado |
 |---|---|---|
-| `GET /api/public/health` | no | **200** |
-| `GET /api/pedidos` | no | **401** |
-| `GET /api/pedidos` | token inválido | **401** |
-| `GET /api/pedidos` | JWT Entra válido + scope | **200** + JSON |
-| `POST /api/pedidos` | JWT Entra válido + scope | **201** |
-| `GET /api/pedidos` | JWT válido sin `access_as_user` | **403** |
+| `GET /api/public/health` | no | **200 OK** |
+| `GET /api/pedidos` | no | **401 Unauthorized** (JSON estructurado) |
+| `GET /api/pedidos` | token inválido | **401 Unauthorized** (JSON estructurado) |
+| `GET /api/pedidos` | JWT sin `access_as_user` | **403 Forbidden** (JSON estructurado) |
+| `GET /api/pedidos` | JWT Entra válido + scope | **200 OK** + JSON |
+| `POST /api/pedidos` | JWT Entra válido + scope | **201 Created** |
 
-El access token se copia desde el frontend (Inicio → claims, o header que adjunta `MsalInterceptor`). Inspección: https://jwt.ms
-
+El access token se copia desde el frontend (Inicio → claims, o header que adjunta `MsalInterceptor`). Inspección de claims: https://jwt.ms
 El login MSAL y las vistas viven en el repositorio **frontend**.

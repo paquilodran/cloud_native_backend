@@ -1,19 +1,22 @@
-### Salud pública (sin token) — debe devolver 200
+### 1. Salud pública (sin token) — 200 OK
 GET http://localhost:8080/api/public/health
 
-### GET pedidos SIN token — debe devolver 401
+### 2. GET pedidos SIN token — 401 Unauthorized estructurado
 GET http://localhost:8080/api/pedidos
 
-### GET pedidos CON token inválido — 401
+### 3. GET pedidos CON token inválido — 401 Unauthorized estructurado
 GET http://localhost:8080/api/pedidos
 Authorization: Bearer token-invalido
 
-### GET pedidos CON token válido — 200 + JSON
-# Pegar el access token de Azure AD (no el id_token)
+### 4. GET pedidos CON token sin scope access_as_user — 403 Forbidden estructurado
+GET http://localhost:8080/api/pedidos
+Authorization: Bearer {{token_sin_scope}}
+
+### 5. GET pedidos CON token válido y scope access_as_user — 200 OK + JSON
 GET http://localhost:8080/api/pedidos
 Authorization: Bearer {{access_token}}
 
-### POST crear pedido CON token — 201
+### 6. POST crear pedido CON token válido — 201 Created
 POST http://localhost:8080/api/pedidos
 Authorization: Bearer {{access_token}}
 Content-Type: application/json

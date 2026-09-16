@@ -10,6 +10,31 @@ services:
       - "5432:5432"
     volumes:
       - pedidos360_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pedidos -d pedidos360_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: pedidos360-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: pedidos360_db
+      DB_USERNAME: pedidos
+      DB_PASSWORD: pedidos
+      AZURE_TENANT_ID: "4531cbe0-83c7-406d-a972-e6302b1fb7d1"
+      AZURE_API_CLIENT_ID: "3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
+      AZURE_API_APP_ID_URI: "api://3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
+      CORS_ALLOWED_ORIGINS: "http://localhost:4200"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pedidos360_pg:

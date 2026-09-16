@@ -51,33 +51,41 @@ npm install
 npm start
 ```
 
-**Local — backend** (JDK 17 + Maven)
+**Local — backend** (JDK 17 + Maven Wrapper incluido)
 
 ```powershell
+cd pedidos360-backend
 $env:AZURE_TENANT_ID="4531cbe0-83c7-406d-a972-e6302b1fb7d1"
 $env:AZURE_API_CLIENT_ID="3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
 $env:AZURE_API_APP_ID_URI="api://3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
-cd pedidos360-backend
-mvn spring-boot:run
+
+# Ejecutar API
+.\mvnw.cmd spring-boot:run
+
+# Ejecutar pruebas automatizadas
+.\mvnw.cmd test
 ```
 
-**Azure (opcional)**
+**Docker Compose (Solución completa)**
 
 ```bash
-cd pedidos360-backend && mvn -DskipTests package
-# JAR: target/pedidos360-backend-1.0.0.jar → App Service / VM
-
-cd pedidos360-frontend && npm run build
-# Subir dist/pedidos360-frontend/browser
+docker compose up --build
 ```
+* Frontend: `http://localhost:4200`
+* Backend: `http://localhost:8080`
+* Base de datos: PostgreSQL en `localhost:5432`
 
-En producción: mismas variables de entorno, `SPRING_PROFILES_ACTIVE=postgres`, `CORS_ALLOWED_ORIGINS` y redirect URI HTTPS de la SPA en Entra ID.
+## 5. Evidencias de la pauta de evaluación
 
-## 5. Evidencias (adjuntar)
+- Tenant Entra ID + 2 app registrations (SPA y API).
+- Angular en `http://localhost:4200` con login Microsoft y flujo PKCE.
+- Token en `localStorage` y `Authorization: Bearer` en interceptor.
+- Suite de pruebas de seguridad automatizadas (`SecurityTests.java`) con 100% de éxito.
+- Códigos HTTP según rúbrica:
+  - `GET /api/public/health` → **200 OK**
+  - `GET /api/pedidos` sin token → **401 Unauthorized** (JSON estructurado)
+  - `GET /api/pedidos` token sin scope `access_as_user` → **403 Forbidden** (JSON estructurado)
+  - `GET /api/pedidos` con JWT válido → **200 OK** + datos JPA
+  - `POST /api/pedidos` con JWT válido → **201 Created**
+- Dockerfiles multi-stage para backend y frontend con orquestador `docker-compose.yml`.
 
-- Tenant Entra + 2 app registrations  
-- Usuario test / admin  
-- Angular en `http://localhost:4200` y login Microsoft  
-- Token en `localStorage` y `Authorization: Bearer` en consola  
-- `GET /api/pedidos` sin token → 401 · con JWT → 200  
-- Terminal `mvn spring-boot:run`
