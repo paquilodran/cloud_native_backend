@@ -43,4 +43,27 @@ public class PedidosController {
         }
         return pedidoRepository.save(pedido);
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_access_as_user')")
+    public Pedido updatePedido(@org.springframework.web.bind.annotation.PathVariable Long id, @Valid @RequestBody Pedido datos) {
+        return pedidoRepository.findById(id).map(existente -> {
+            existente.setNombre(datos.getNombre());
+            existente.setCliente(datos.getCliente());
+            if (datos.getEstado() != null && !datos.getEstado().isBlank()) {
+                existente.setEstado(datos.getEstado());
+            }
+            existente.setTotal(datos.getTotal());
+            return pedidoRepository.save(existente);
+        }).orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_access_as_user')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePedido(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        if (pedidoRepository.existsById(id)) {
+            pedidoRepository.deleteById(id);
+        }
+    }
 }
