@@ -47,7 +47,8 @@ public class PedidosController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_access_as_user')")
-    public Pedido updatePedido(@org.springframework.web.bind.annotation.PathVariable Long id, @Valid @RequestBody Pedido datos) {
+    public Pedido updatePedido(@org.springframework.web.bind.annotation.PathVariable Long id,
+            @Valid @RequestBody Pedido datos) {
         return pedidoRepository.findById(id).map(existente -> {
             existente.setNombre(datos.getNombre());
             existente.setCliente(datos.getCliente());
@@ -56,7 +57,8 @@ public class PedidosController {
             }
             existente.setTotal(datos.getTotal());
             return pedidoRepository.save(existente);
-        }).orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
+        }).orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Pedido no encontrado"));
     }
 
     @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
