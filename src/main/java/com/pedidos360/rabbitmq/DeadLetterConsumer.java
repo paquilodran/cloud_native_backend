@@ -39,9 +39,9 @@ public class DeadLetterConsumer {
         }
 
         log.error("======================================================================");
-        log.error("[🚨 AUDITORÍA DLQ Pedidos360] Mensaje muerto capturado en '{}'", RabbitMQConfig.DLQ_QUEUE);
-        log.error("                             Orden ID: {} | Cliente: {}", event.getOrderId(), event.getCliente());
-        log.error("                             Causa x-death: '{}' | Reintentos: {} | Cola origen: '{}'",
+        log.error("[AUDITORIA DLQ Pedidos360] Mensaje muerto capturado en '{}'", RabbitMQConfig.DLQ_QUEUE);
+        log.error("                           Orden ID: {} | Cliente: {}", event.getOrderId(), event.getCliente());
+        log.error("                           Causa x-death: '{}' | Reintentos: {} | Cola origen: '{}'",
                 razon, reintentos, colaOrigen);
         log.error("======================================================================");
 

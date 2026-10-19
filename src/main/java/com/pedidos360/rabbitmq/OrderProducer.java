@@ -16,7 +16,7 @@ public class OrderProducer {
     }
 
     public void publishOrder(OrderEvent event) {
-        log.info("[📤 PRODUCER Pedidos360] Publicando orden #{} a '{}' con routingKey '{}'",
+        log.info("[PRODUCER Pedidos360] Publicando orden #{} a '{}' con routingKey '{}'",
                 event.getOrderId(), RabbitMQConfig.ORDERS_EXCHANGE, RabbitMQConfig.ORDERS_ROUTING_KEY);
 
         rabbitTemplate.convertAndSend(

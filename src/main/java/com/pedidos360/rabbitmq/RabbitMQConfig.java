@@ -1,6 +1,11 @@
 package com.pedidos360.rabbitmq;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,32 +14,28 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Topología de mensajería asíncrona resiliente de RabbitMQ:
+ * Topologia de mensajeria asincrona resiliente de RabbitMQ:
  * - DirectExchange (orders.exchange)
- * - Cola Principal (orders.queue) con TTL 30s y redirección automática hacia DLX
+ * - Cola Principal (orders.queue) con TTL 30s y redireccion automatica hacia DLX
  * - Dead Letter Exchange (orders.dlx)
- * - Dead Letter Queue (orders.dlq) con retención de 24h
+ * - Dead Letter Queue (orders.dlq) con retencion de 24h
  */
 @Configuration
 public class RabbitMQConfig {
 
-    // ========== EXCHANGES Y COLAS PRINCIPALES ==========
     public static final String ORDERS_EXCHANGE = "orders.exchange";
     public static final String ORDERS_QUEUE = "orders.queue";
     public static final String ORDERS_ROUTING_KEY = "order.created";
 
-    // ========== DEAD LETTER EXCHANGE (DLX) Y COLA (DLQ) ==========
     public static final String DLX_EXCHANGE = "orders.dlx";
     public static final String DLQ_QUEUE = "orders.dlq";
     public static final String DLX_ROUTING_KEY = "order.dead";
 
-    // ========== Exchange Principal (Direct) ==========
     @Bean
     public DirectExchange ordersExchange() {
         return new DirectExchange(ORDERS_EXCHANGE, true, false);
     }
 
-    // ========== Cola Principal con DLX y TTL ==========
     @Bean
     public Queue ordersQueue() {
         return QueueBuilder.durable(ORDERS_QUEUE)
@@ -52,13 +53,11 @@ public class RabbitMQConfig {
                 .with(ORDERS_ROUTING_KEY);
     }
 
-    // ========== Dead Letter Exchange (Fanout) ==========
     @Bean
     public FanoutExchange deadLetterExchange() {
         return new FanoutExchange(DLX_EXCHANGE, true, false);
     }
 
-    // ========== Dead Letter Queue (DLQ con TTL de 24h) ==========
     @Bean
     public Queue deadLetterQueue() {
         return QueueBuilder.durable(DLQ_QUEUE)
@@ -72,7 +71,6 @@ public class RabbitMQConfig {
                 .to(deadLetterExchange);
     }
 
-    // ========== Serializador JSON ==========
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

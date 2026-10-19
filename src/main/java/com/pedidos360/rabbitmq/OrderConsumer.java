@@ -20,23 +20,23 @@ public class OrderConsumer {
         int intentoActual = contador.incrementAndGet();
 
         log.info("----------------------------------------------------------------------");
-        log.info("[📥 CONSUMER Pedidos360] Recibiendo orden #{} (Intento {} de 3)", event.getOrderId(), intentoActual);
-        log.info("                         Cliente: {} | Total: ${}", event.getCliente(), event.getTotal());
+        log.info("[CONSUMER Pedidos360] Recibiendo orden #{} (Intento {} de 3)", event.getOrderId(), intentoActual);
+        log.info("                      Cliente: {} | Total: ${}", event.getCliente(), event.getTotal());
 
         if (event.isSimularFallo()) {
-            log.warn("[⚠️ FALLO SIMULADO] Error en orden #{}. Motivo: {}",
+            log.warn("[FALLO SIMULADO] Error en orden #{}. Motivo: {}",
                     event.getOrderId(), event.getMotivoFallo());
 
             if (intentoActual >= 3) {
-                log.error("[❌ LÍMITE DE REINTENTOS] Orden #{} rechazada. RabbitMQ la traslada a '{}' -> '{}'",
+                log.error("[LIMITE DE REINTENTOS] Orden #{} rechazada. RabbitMQ la traslada a '{}' -> '{}'",
                         event.getOrderId(), RabbitMQConfig.DLX_EXCHANGE, RabbitMQConfig.DLQ_QUEUE);
                 intentosPorOrden.remove(event.getOrderId());
             }
 
-            throw new RuntimeException("Simulación de fallo controlada: " + event.getMotivoFallo());
+            throw new RuntimeException("Simulacion de fallo controlada: " + event.getMotivoFallo());
         }
 
-        log.info("[✅ ÉXITO] Orden #{} procesada correctamente (ACK)", event.getOrderId());
+        log.info("[EXITO] Orden #{} procesada correctamente (ACK)", event.getOrderId());
         log.info("----------------------------------------------------------------------");
         intentosPorOrden.remove(event.getOrderId());
     }
