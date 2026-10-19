@@ -2,10 +2,12 @@ package com.pedidos360.rabbitmq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,14 +18,18 @@ public class DeadLetterConsumer {
     private static final Logger log = LoggerFactory.getLogger(DeadLetterConsumer.class);
     private final List<DeadLetterEntry> records = new CopyOnWriteArrayList<>();
 
-    @RabbitListener(queues = RabbitMQConfig.DLQ_QUEUE)
+    @RabbitListener(queues = {
+            RabbitMQConfig.DLQ_QUEUE,
+            RabbitMQConfig.NOTIFICATIONS_DLQ,
+            RabbitMQConfig.TOPIC_DLQ
+    })
     public void onDeadLetter(
-            OrderEvent event,
+            Object rawMessage,
             @Header(required = false, name = "x-death") List<Map<String, Object>> xDeath) {
 
         String razon = "rejected";
         Long reintentos = 1L;
-        String colaOrigen = RabbitMQConfig.ORDERS_QUEUE;
+        String colaOrigen = "orders.queue";
 
         if (xDeath != null && !xDeath.isEmpty()) {
             Map<String, Object> death = xDeath.get(0);
@@ -38,16 +44,26 @@ public class DeadLetterConsumer {
             }
         }
 
+        String payloadText;
+        if (rawMessage instanceof byte[] bytes) {
+            payloadText = new String(bytes, StandardCharsets.UTF_8);
+        } else if (rawMessage instanceof Message msg) {
+            payloadText = new String(msg.getBody(), StandardCharsets.UTF_8);
+        } else if (rawMessage != null) {
+            payloadText = rawMessage.toString();
+        } else {
+            payloadText = "{}";
+        }
+
         log.error("======================================================================");
-        log.error("[AUDITORIA DLQ Pedidos360] Mensaje muerto capturado en '{}'", RabbitMQConfig.DLQ_QUEUE);
-        log.error("                           Orden ID: {} | Cliente: {}", event.getOrderId(), event.getCliente());
-        log.error("                           Causa x-death: '{}' | Reintentos: {} | Cola origen: '{}'",
-                razon, reintentos, colaOrigen);
+        log.error("[AUDITORIA DLQ Pedidos360] Mensaje muerto capturado desde cola origen '{}'", colaOrigen);
+        log.error("                           Causa x-death: '{}' | Reintentos: {}", razon, reintentos);
+        log.error("                           Payload: {}", payloadText);
         log.error("======================================================================");
 
         DeadLetterEntry entry = new DeadLetterEntry(
                 UUID.randomUUID().toString(),
-                event,
+                payloadText,
                 razon,
                 reintentos,
                 colaOrigen,
@@ -67,7 +83,7 @@ public class DeadLetterConsumer {
 
     public record DeadLetterEntry(
             String id,
-            OrderEvent event,
+            String payload,
             String razon,
             Long reintentos,
             String colaOrigen,
