@@ -6,6 +6,22 @@ spring:
     name: pedidos360-backend
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:h2}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: auto
+        auto-startup: ${RABBITMQ_AUTO_STARTUP:true}
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-attempts: 3
+        default-requeue-rejected: false
   jpa:
     hibernate:
       ddl-auto: update
