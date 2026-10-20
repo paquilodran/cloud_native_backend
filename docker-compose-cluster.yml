@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # =========================================================================
+  # NODO 1 DEL CLUSTER RABBITMQ (EP4 - Requisito 8 y 11)
+  # =========================================================================
+  rabbitmq-node1:
+    image: rabbitmq:4-management
+    container_name: rabbitmq-cluster-node1
+    hostname: rabbit1
+    networks:
+      - rabbitmq-cluster-net
+    ports:
+      - "5672:5672"     # Protocolo AMQP Nodo 1
+      - "15672:15672"   # Management UI Nodo 1 (http://localhost:15672)
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SECRET_COOKIE_DUOC_CLOUD_NATIVE"
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_NODENAME: rabbit@rabbit1
+    volumes:
+      - rabbitmq_node1_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =========================================================================
+  # NODO 2 DEL CLUSTER RABBITMQ (EP4 - Requisito 8 y 11)
+  # =========================================================================
+  rabbitmq-node2:
+    image: rabbitmq:4-management
+    container_name: rabbitmq-cluster-node2
+    hostname: rabbit2
+    networks:
+      - rabbitmq-cluster-net
+    ports:
+      - "5673:5672"     # Protocolo AMQP Nodo 2
+      - "15673:15672"   # Management UI Nodo 2 (http://localhost:15673)
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SECRET_COOKIE_DUOC_CLOUD_NATIVE"
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_NODENAME: rabbit@rabbit2
+    volumes:
+      - rabbitmq_node2_data:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq-node1
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  rabbitmq-cluster-net:
+    driver: bridge
+
+volumes:
+  rabbitmq_node1_data:
+  rabbitmq_node2_data:
