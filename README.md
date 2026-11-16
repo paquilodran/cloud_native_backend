@@ -1,9 +1,11 @@
-# Pedidos360 — Backend (Spring Boot + RabbitMQ Resiliente + JWT)
+# Pedidos360 — Backend (Spring Boot + RabbitMQ Resiliente + Apache Kafka Streaming + JWT)
 
 **Institución:** Duoc UC  
 **Asignatura:** DSY1107 — Desarrollo Cloud Native I  
-**Evaluación:** Evaluación Parcial N° 3 (Encargo 12%) & Evaluación Parcial N° 4 (Presentación 18%)  
-**Rama Oficial:** `guia-dlx-dlq-retencion-alertas`  
+**Evaluaciones:**
+- EP3 (Encargo RabbitMQ 12%) & EP4 (Presentación RabbitMQ 18%)
+- **EP5 (Encargo Kafka Streaming 12%) & EP6 (Presentación Kafka Streaming 18%)**
+**Entorno de Contenedores:** OrbStack / Docker Desktop  
 **Repositorio Backend:** [https://github.com/paquilodran/cloud_native_backend](https://github.com/paquilodran/cloud_native_backend)  
 **Repositorio Frontend:** [https://github.com/paquilodran/cloud_native_frontend](https://github.com/paquilodran/cloud_native_frontend)  
 
@@ -11,14 +13,22 @@
 
 ## 1. Descripción del Sistema
 
-API REST desarrollada con **Java 17** y **Spring Boot 3.4**, que integra autenticación basada en tokens JWT con Microsoft Entra ID (IDaaS) y una **arquitectura de mensajería asíncrona desacoplada y resiliente con RabbitMQ**.
+API REST Cloud Native desarrollada con **Java 17** y **Spring Boot 3.4**, que integra autenticación JWT con Microsoft Entra ID (IDaaS), mensajería asíncrona transaccional con **RabbitMQ**, y una plataforma de **Streaming de Eventos y Analítica en Tiempo Real con Apache Kafka**.
 
 El backend incorpora:
-1. **3 Colas de Mensajería Principales** con sus respectivas **3 Dead Letter Queues (DLQ)** y políticas de retención TTL.
-2. **Exchanges Direct y Topic** para enrutamiento selectivo y por patrones (`pedidos.*`).
-3. **Manejo de Resiliencia:** 3 reintentos automáticos con backoff exponencial, confirmaciones ACK/NACK explícitas y auditoría de metadatos `x-death`.
-4. **Microservicio Administrador (`RabbitAdminService`):** Creación, eliminación y purga dinámica de colas y exchanges expuestos vía API REST, con validación estricta de parámetros mediante DTOs.
-5. **Soporte de Alta Disponibilidad:** Compatible con clúster de 2 nodos de RabbitMQ en Docker.
+1. **Streaming con Apache Kafka (EP5 & EP6):**
+   - Clúster de **3 Nodos Zookeeper** y **3 Brokers Kafka** en alta disponibilidad con replicación cruzada.
+   - **2 Tópicos Principales:** `pedidos.analytics.stream` y `pedidos.audit.stream`, ambos con **3 Particiones y 3 Réplicas**.
+   - Parámetros avanzados de administración: `retention.ms` (24h en analítica, 7 días en auditoría), `cleanup.policy` (`delete` vs `compact,delete`), `min.insync.replicas=2`.
+   - **Productores y Consumidores Desacoplados:** Productores con `acks=all`, idempotencia y DTOs tipados. Consumidores en grupos independientes (`pedidos-analytics-group`, `pedidos-audit-group`) con concurrencia 3.
+   - **Microservicio Administrador de Kafka (`KafkaAdminService`):** Creación, inspección, actualización y eliminación de tópicos vía API REST.
+   - **Observabilidad Web:** Interfaz gráfica **Kafka-UI** en `http://localhost:8085` para monitoreo de brokers, tópicos, mensajes, offsets y lag.
+2. **Mensajería Asíncrona Resiliente con RabbitMQ (EP3 & EP4):**
+   - 3 Colas principales con sus 3 Dead Letter Queues (DLQ) y TTL.
+   - Exchanges Direct y Topic para enrutamiento por patrones (`pedidos.*`).
+   - Microservicio Administrador (`RabbitAdminService`) y soporte de clúster de 2 nodos.
+3. **Seguridad y Cloud Native:**
+   - Stateless JWT Resource Server validando `iss`, `aud`, `exp`.
 
 ---
 
