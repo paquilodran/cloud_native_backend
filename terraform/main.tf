@@ -641,6 +641,16 @@ resource "aws_apigatewayv2_integration" "backend_integration" {
   description            = "Proxy hacia el backend Spring Boot en EC2 :8080"
 }
 
+# Integración HTTP Proxy para endpoints públicos (/api/public/...)
+resource "aws_apigatewayv2_integration" "public_backend_integration" {
+  api_id                 = aws_apigatewayv2_api.http_api.id
+  integration_type       = "HTTP_PROXY"
+  integration_method     = "ANY"
+  integration_uri        = "http://${local.target_ip}:8080/api/public/{proxy}"
+  payload_format_version = "1.0"
+  description            = "Proxy hacia endpoints publicos en backend Spring Boot :8080"
+}
+
 # Ruta protegida por JWT: ANY /{proxy+}
 resource "aws_apigatewayv2_route" "protected_proxy_route" {
   api_id             = aws_apigatewayv2_api.http_api.id
@@ -654,7 +664,7 @@ resource "aws_apigatewayv2_route" "protected_proxy_route" {
 resource "aws_apigatewayv2_route" "public_proxy_route" {
   api_id             = aws_apigatewayv2_api.http_api.id
   route_key          = "ANY /api/public/{proxy+}"
-  target             = "integrations/${aws_apigatewayv2_integration.backend_integration.id}"
+  target             = "integrations/${aws_apigatewayv2_integration.public_backend_integration.id}"
   authorization_type = "NONE"
 }
 
