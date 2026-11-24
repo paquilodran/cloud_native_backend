@@ -1,0 +1,16 @@
+# =============================================================================
+# VARIABLES DE CONFIGURACION TERRAFORM - PEDIDOS360 (AWS LEARNER LAB)
+# =============================================================================
+
+aws_region           = "us-east-1"
+aws_account_id       = "088268627428"
+instance_type        = "t3.large"
+key_name             = "vockey"              # Nombre del keypair nativo en AWS Academy Learner Lab
+create_key_pair      = false                 # true si usas una cuenta AWS estándar y quieres crear el key_pair
+use_lab_instance_profile = true              # Obligatorio para Learner Lab (usa LabInstanceProfile)
+assign_eip           = false
+
+# Configuraciones de Microsoft Entra ID (IDaaS)
+azure_tenant_id      = "4531cbe0-83c7-406d-a972-e6302b1fb7d1"
+azure_client_id      = "3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
+azure_app_id_uri     = "api://3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
