@@ -307,7 +307,7 @@ services:
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
       KAFKA_BOOTSTRAP_SERVERS: "kafka-1:29092,kafka-2:29093,kafka-3:29094"
-      CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost,http://44.201.2.75,https://pedidos360eva2.duckdns.org"
+      CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://localhost,http://3.239.46.163,https://pedidos360eva2.duckdns.org"
       AZURE_TENANT_ID: "4531cbe0-83c7-406d-a972-e6302b1fb7d1"
       AZURE_API_CLIENT_ID: "3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
       AZURE_API_APP_ID_URI: "api://3609dffc-ca49-4133-a6e5-2dbf3ba2a120"
