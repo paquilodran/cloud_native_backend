@@ -62,8 +62,8 @@ app:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
   kafka:
     topics:
-      analytics: ${KAFKA_TOPIC_ANALYTICS:pedidos.analytics.stream}
-      audit: ${KAFKA_TOPIC_AUDIT:pedidos.audit.stream}
+      analytics: ${KAFKA_TOPIC_ANALYTICS:tcg.analytics.stream}
+      audit: ${KAFKA_TOPIC_AUDIT:tcg.audit.stream}
     partitions: 3
     replication-factor: 3
 

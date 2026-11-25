@@ -218,8 +218,8 @@ services:
       "cub kafka-ready -b kafka-1:29092 1 40 &&
        cub kafka-ready -b kafka-2:29093 1 40 &&
        cub kafka-ready -b kafka-3:29094 1 40 &&
-       kafka-topics --bootstrap-server kafka-1:29092 --create --if-not-exists --topic pedidos.analytics.stream --partitions 3 --replication-factor 3 --config retention.ms=86400000 --config cleanup.policy=delete --config min.insync.replicas=2 &&
-       kafka-topics --bootstrap-server kafka-1:29092 --create --if-not-exists --topic pedidos.audit.stream --partitions 3 --replication-factor 3 --config retention.ms=604800000 --config cleanup.policy=compact,delete --config min.insync.replicas=2 &&
+       kafka-topics --bootstrap-server kafka-1:29092 --create --if-not-exists --topic tcg.analytics.stream --partitions 3 --replication-factor 3 --config retention.ms=86400000 --config cleanup.policy=delete --config min.insync.replicas=2 &&
+       kafka-topics --bootstrap-server kafka-1:29092 --create --if-not-exists --topic tcg.audit.stream --partitions 3 --replication-factor 3 --config retention.ms=604800000 --config cleanup.policy=compact,delete --config min.insync.replicas=2 &&
        echo '=== TOPICOS CREADOS EXITOSAMENTE ===' &&
        kafka-topics --bootstrap-server kafka-1:29092 --describe"
 

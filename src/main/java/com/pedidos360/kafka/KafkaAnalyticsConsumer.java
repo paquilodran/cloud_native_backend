@@ -12,8 +12,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 /**
- * Consumidor Kafka para el Topico de Analitica en Tiempo Real (pedidos.analytics.stream).
- * Consumer Group: pedidos-analytics-group (concurrencia 3 hilos para las 3 particiones).
+ * Consumidor Kafka para el Topico de Analitica en Tiempo Real (tcg.analytics.stream).
+ * Consumer Group: tcg-analytics-group (concurrencia 3 hilos para las 3 particiones).
  * Mantiene la logica de procesamiento separada de la infraestructura (EP5).
  */
 @Component
@@ -30,8 +30,8 @@ public class KafkaAnalyticsConsumer {
     }
 
     @KafkaListener(
-            topics = "${app.kafka.topics.analytics:pedidos.analytics.stream}",
-            groupId = "pedidos-analytics-group",
+            topics = "${app.kafka.topics.analytics:tcg.analytics.stream}",
+            groupId = "tcg-analytics-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void consumeAnalyticsRecord(

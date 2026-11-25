@@ -56,7 +56,7 @@ public class DeadLetterConsumer {
         }
 
         log.error("======================================================================");
-        log.error("[AUDITORIA DLQ Pedidos360] Mensaje muerto capturado desde cola origen '{}'", colaOrigen);
+        log.error("[AUDITORIA DLQ PokeVault TCG] Mensaje muerto capturado desde cola origen '{}'", colaOrigen);
         log.error("                           Causa x-death: '{}' | Reintentos: {}", razon, reintentos);
         log.error("                           Payload: {}", payloadText);
         log.error("======================================================================");

@@ -36,8 +36,8 @@ public class RabbitMQController {
                 ? request.getOrderId()
                 : "ORD-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Cliente Pedidos360";
-        String producto = (request != null && request.getProducto() != null) ? request.getProducto() : "Item General";
+        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Entrenador TCG";
+        String producto = (request != null && request.getProducto() != null) ? request.getProducto() : "Carta Pokemon";
         double total = (request != null && request.getTotal() > 0) ? request.getTotal() : 150000.0;
 
         OrderEvent event = new OrderEvent(id, cliente, producto, total, false, null);
@@ -56,8 +56,8 @@ public class RabbitMQController {
                 ? request.getOrderId()
                 : "FAIL-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Cliente con Error";
-        String producto = (request != null && request.getProducto() != null) ? request.getProducto() : "Transaccion Fallida";
+        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Entrenador con Error";
+        String producto = (request != null && request.getProducto() != null) ? request.getProducto() : "Compra Fallida";
         double total = (request != null && request.getTotal() > 0) ? request.getTotal() : 50000.0;
         String motivo = (request != null && request.getMotivoFallo() != null)
                 ? request.getMotivoFallo()
@@ -121,7 +121,7 @@ public class RabbitMQController {
     // =========================================================================
     @PostMapping("/topic-events")
     public ResponseEntity<Map<String, Object>> createTopicEvent(
-            @RequestParam(name = "routingKey", defaultValue = "pedidos.creado") String routingKey,
+            @RequestParam(name = "routingKey", defaultValue = "tcg.compra") String routingKey,
             @RequestBody(required = false) BusinessTopicEvent request) {
 
         String id = (request != null && request.getEventId() != null && !request.getEventId().isBlank())
@@ -145,7 +145,7 @@ public class RabbitMQController {
 
     @PostMapping("/topic-events/fail")
     public ResponseEntity<Map<String, Object>> createFailingTopicEvent(
-            @RequestParam(name = "routingKey", defaultValue = "pedidos.critico") String routingKey,
+            @RequestParam(name = "routingKey", defaultValue = "tcg.critico") String routingKey,
             @RequestBody(required = false) BusinessTopicEvent request) {
 
         String id = (request != null && request.getEventId() != null && !request.getEventId().isBlank())
@@ -187,12 +187,12 @@ public class RabbitMQController {
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> getTopologyStatus() {
         return ResponseEntity.ok(Map.of(
-                "system", "Pedidos360 - Resilient AMQP Module (EP3 / EP4)",
+                "system", "Pokemon TCG - Resilient AMQP Module (EP3 / EP4)",
                 "status", "UP",
                 "exchanges", List.of(
                         Map.of("name", RabbitMQConfig.ORDERS_EXCHANGE, "type", "Direct"),
                         Map.of("name", RabbitMQConfig.NOTIFICATIONS_EXCHANGE, "type", "Direct"),
-                        Map.of("name", RabbitMQConfig.TOPIC_EXCHANGE, "type", "Topic (pedidos.*)"),
+                        Map.of("name", RabbitMQConfig.TOPIC_EXCHANGE, "type", "Topic (tcg.*)"),
                         Map.of("name", RabbitMQConfig.DLX_EXCHANGE, "type", "Fanout (DLX)"),
                         Map.of("name", RabbitMQConfig.NOTIFICATIONS_DLX, "type", "Fanout (DLX)"),
                         Map.of("name", RabbitMQConfig.TOPIC_DLX, "type", "Fanout (DLX)")

@@ -36,7 +36,7 @@ public class KafkaController {
                                 "replicas", 3,
                                 "retention", "24h (86400000 ms)",
                                 "cleanupPolicy", "delete",
-                                "consumerGroup", "pedidos-analytics-group"
+                                "consumerGroup", "tcg-analytics-group"
                         ),
                         Map.of(
                                 "name", producer.getAuditTopic(),
@@ -44,7 +44,7 @@ public class KafkaController {
                                 "replicas", 3,
                                 "retention", "7d (604800000 ms)",
                                 "cleanupPolicy", "compact,delete",
-                                "consumerGroup", "pedidos-audit-group"
+                                "consumerGroup", "tcg-audit-group"
                         )
                 ),
                 "metrics", analyticsService.getStreamingMetrics()
@@ -57,10 +57,10 @@ public class KafkaController {
                 ? request.getOrderId()
                 : "ORD-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Cliente Streaming";
+        String cliente = (request != null && request.getCliente() != null) ? request.getCliente() : "Entrenador Streaming";
         String producto = (request != null && request.getProducto() != null) ? request.getProducto() : "Articulo Cloud";
         Double monto = (request != null && request.getMonto() != null && request.getMonto() > 0) ? request.getMonto() : 85000.0;
-        String cat = (request != null && request.getCategoria() != null) ? request.getCategoria() : "TECNOLOGIA";
+        String cat = (request != null && request.getCategoria() != null) ? request.getCategoria() : "FIRE";
         String canal = (request != null && request.getCanalVenta() != null) ? request.getCanalVenta() : "WEB";
         String estado = (request != null && request.getEstado() != null) ? request.getEstado() : "PROCESADO";
 
@@ -100,7 +100,7 @@ public class KafkaController {
 
     @PostMapping("/publish/batch-demo")
     public ResponseEntity<Map<String, Object>> publishBatchDemo(@RequestParam(defaultValue = "6") int count) {
-        String[] categorias = {"TECNOLOGIA", "ALIMENTOS", "HOGAR", "LOGISTICA", "MODA"};
+        String[] categorias = {"FIRE", "WATER", "GRASS", "LIGHTNING", "PSYCHIC", "FIGHTING"};
         String[] canales = {"WEB", "MOBILE", "API", "SUCURSAL"};
         String[] estados = {"PROCESADO", "PAGADO", "DESPACHADO"};
         Random random = new Random();
@@ -108,8 +108,9 @@ public class KafkaController {
         List<OrderAnalyticsEvent> emitted = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             String orderId = "ORD-" + (1000 + random.nextInt(9000));
-            String cliente = "Cliente Batch " + (i + 1);
-            String prod = "Item-" + (10 + random.nextInt(90));
+            String cliente = "Entrenador Batch " + (i + 1);
+            String[] cartasDemo = {"Charizard", "Blastoise", "Venusaur", "Pikachu", "Mewtwo", "Machamp", "Gyarados", "Zapdos"};
+            String prod = cartasDemo[random.nextInt(cartasDemo.length)];
             double monto = 20000.0 + (random.nextInt(150) * 1000.0);
             String cat = categorias[random.nextInt(categorias.length)];
             String canal = canales[random.nextInt(canales.length)];

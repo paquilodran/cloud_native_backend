@@ -164,7 +164,7 @@ public class KafkaIntegrationTest {
         // Validacion de creacion de topico
         when(kafkaAdminService.createTopic(any())).thenReturn(true);
 
-        CreateKafkaTopicDto topicDto = new CreateKafkaTopicDto("pedidos.nuevo.topico", 3, (short) 3, 86400000L, "delete");
+        CreateKafkaTopicDto topicDto = new CreateKafkaTopicDto("tcg.nuevo.topico", 3, (short) 3, 86400000L, "delete");
 
         mockMvc.perform(post("/api/public/kafka/admin/topics")
                         .contentType(MediaType.APPLICATION_JSON)

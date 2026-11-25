@@ -44,10 +44,10 @@ public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers:localhost:9092,localhost:9093,localhost:9094}")
     private String bootstrapServers;
 
-    @Value("${app.kafka.topics.analytics:pedidos.analytics.stream}")
+    @Value("${app.kafka.topics.analytics:tcg.analytics.stream}")
     private String analyticsTopic;
 
-    @Value("${app.kafka.topics.audit:pedidos.audit.stream}")
+    @Value("${app.kafka.topics.audit:tcg.audit.stream}")
     private String auditTopic;
 
     @Value("${app.kafka.partitions:3}")
@@ -61,7 +61,7 @@ public class KafkaConfig {
     // =========================================================================
 
     /**
-     * Topico 1: Streaming Analitico de Pedidos (pedidos.analytics.stream)
+     * Topico 1: Streaming Analitico de Pedidos (tcg.analytics.stream)
      * - 3 Particiones (balanceo horizontal)
      * - Factor de Replicacion: 3 (tolerancia a caida de 2 brokers con min.insync.replicas=2)
      * - Retencion: 24 horas (86.400.000 ms)
@@ -81,7 +81,7 @@ public class KafkaConfig {
     }
 
     /**
-     * Topico 2: Streaming de Auditoria y Trazabilidad (pedidos.audit.stream)
+     * Topico 2: Streaming de Auditoria y Trazabilidad (tcg.audit.stream)
      * - 3 Particiones
      * - Factor de Replicacion: 3
      * - Retencion: 7 dias (604.800.000 ms)

@@ -131,7 +131,7 @@ public class RabbitMQConfig {
     // =========================================================================
     public static final String TOPIC_EXCHANGE = "events.topic.exchange";
     public static final String TOPIC_QUEUE = "events.topic.queue";
-    public static final String TOPIC_ROUTING_PATTERN = "pedidos.*";
+    public static final String TOPIC_ROUTING_PATTERN = "tcg.*";
 
     public static final String TOPIC_DLX = "events.dlx";
     public static final String TOPIC_DLQ = "events.dlq";

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Consumidor de la cola 'events.topic.queue' (Caso de uso 3 - Topic Exchange).
- * Escucha eventos bajo el patron de enrutamiento 'pedidos.*'.
+ * Escucha eventos bajo el patron de enrutamiento 'tcg.*'.
  */
 @Component
 public class BusinessTopicConsumer {

@@ -155,7 +155,7 @@ public class RabbitMQIntegrationTest {
     }
 
     @Test
-    @DisplayName("Caso 3: Encolar evento topic en events.topic.queue con patron pedidos.*")
+    @DisplayName("Caso 3: Encolar evento topic en events.topic.queue con patron tcg.*")
     void testCreateTopicEvent() throws Exception {
         String json = """
             {
@@ -167,13 +167,13 @@ public class RabbitMQIntegrationTest {
             }
         """;
 
-        mockMvc.perform(post("/api/public/rabbitmq/topic-events?routingKey=pedidos.despachado")
+        mockMvc.perform(post("/api/public/rabbitmq/topic-events?routingKey=tcg.despachado")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("ENQUEUED"))
                 .andExpect(jsonPath("$.exchange").value(RabbitMQConfig.TOPIC_EXCHANGE))
-                .andExpect(jsonPath("$.routingKey").value("pedidos.despachado"));
+                .andExpect(jsonPath("$.routingKey").value("tcg.despachado"));
     }
 
     @Test

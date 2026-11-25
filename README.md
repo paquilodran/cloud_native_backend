@@ -196,3 +196,14 @@ src/main/java/com/pedidos360
     ├── IssuerValidator.java
     └── SecurityConfig.java
 ```
+
+## PokeVault TCG (reemplaza a Pedidos360)
+
+Tienda de cartas Pokemon TCG de punta a punta:
+
+- **Catalogo**: `GET /api/public/cartas` (importado desde pokemontcg.io al iniciar; catalogo semilla si no hay internet).
+- **Ordenes (JWT Entra ID)**: `GET/POST /api/ordenes`, `POST /api/ordenes/sobre` (sobre de 5 cartas). Se persisten en PostgreSQL.
+- **RabbitMQ**: cada orden publica un `OrderEvent` (`orders.queue`, DLQ y topic `tcg.*`).
+- **Kafka**: una orden emite un evento por carta a `tcg.analytics.stream` (categoria = tipo Pokemon) y uno a `tcg.audit.stream`.
+- **Brokers**: Bulbasaur (broker 1), Charmander (broker 2), Squirtle (broker 3).
+- Los nombres internos de contenedores, red y base de datos se mantienen (`pedidos360-*`) para no recrear la infraestructura.

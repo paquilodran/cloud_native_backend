@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Productor de Eventos Apache Kafka para Pedidos360.
+ * Productor de Eventos Apache Kafka para PokeVault TCG.
  * Envia eventos tipados mediante DTOs estructurados y claves de particionamiento.
  * Cumple con el indicador de evaluacion EP5 para productores Kafka.
  */
@@ -24,10 +24,10 @@ public class KafkaEventProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${app.kafka.topics.analytics:pedidos.analytics.stream}")
+    @Value("${app.kafka.topics.analytics:tcg.analytics.stream}")
     private String analyticsTopic;
 
-    @Value("${app.kafka.topics.audit:pedidos.audit.stream}")
+    @Value("${app.kafka.topics.audit:tcg.audit.stream}")
     private String auditTopic;
 
     public KafkaEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {
@@ -35,7 +35,7 @@ public class KafkaEventProducer {
     }
 
     /**
-     * Publica un evento analitico en el topico pedidos.analytics.stream.
+     * Publica un evento analitico en el topico tcg.analytics.stream.
      * Utiliza el orderId como mensaje key para garantizar ordenamiento por orden.
      */
     public CompletableFuture<SendResult<String, Object>> publishAnalyticsEvent(OrderAnalyticsEvent event) {
@@ -62,7 +62,7 @@ public class KafkaEventProducer {
     }
 
     /**
-     * Publica un evento de auditoria en el topico pedidos.audit.stream.
+     * Publica un evento de auditoria en el topico tcg.audit.stream.
      */
     public CompletableFuture<SendResult<String, Object>> publishAuditEvent(OrderAuditStreamEvent event) {
         String key = event.getOrderId() != null ? event.getOrderId() : UUID.randomUUID().toString();

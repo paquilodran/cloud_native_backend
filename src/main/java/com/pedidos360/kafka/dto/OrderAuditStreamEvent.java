@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * DTO tipado para eventos de auditoria y trazabilidad en Apache Kafka.
- * Topic principal: pedidos.audit.stream
+ * Topic principal: tcg.audit.stream
  */
 public class OrderAuditStreamEvent implements Serializable {
 

@@ -20,7 +20,7 @@ public class OrderConsumer {
         int intentoActual = contador.incrementAndGet();
 
         log.info("----------------------------------------------------------------------");
-        log.info("[CONSUMER Pedidos360] Recibiendo orden #{} (Intento {} de 3)", event.getOrderId(), intentoActual);
+        log.info("[CONSUMER PokeVault TCG] Recibiendo orden #{} (Intento {} de 3)", event.getOrderId(), intentoActual);
         log.info("                      Cliente: {} | Total: ${}", event.getCliente(), event.getTotal());
 
         if (event.isSimularFallo()) {

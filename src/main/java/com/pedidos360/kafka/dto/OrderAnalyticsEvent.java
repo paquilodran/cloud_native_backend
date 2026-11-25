@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * DTO tipado para eventos analiticos de streaming en Apache Kafka.
- * Topic principal: pedidos.analytics.stream
+ * Topic principal: tcg.analytics.stream
  */
 public class OrderAnalyticsEvent implements Serializable {
 

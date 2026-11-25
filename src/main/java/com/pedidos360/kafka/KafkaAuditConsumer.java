@@ -12,8 +12,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 /**
- * Consumidor Kafka para el Topico de Auditoria y Trazabilidad (pedidos.audit.stream).
- * Consumer Group: pedidos-audit-group (concurrencia 3 hilos para las 3 particiones).
+ * Consumidor Kafka para el Topico de Auditoria y Trazabilidad (tcg.audit.stream).
+ * Consumer Group: tcg-audit-group (concurrencia 3 hilos para las 3 particiones).
  */
 @Component
 public class KafkaAuditConsumer {
@@ -29,8 +29,8 @@ public class KafkaAuditConsumer {
     }
 
     @KafkaListener(
-            topics = "${app.kafka.topics.audit:pedidos.audit.stream}",
-            groupId = "pedidos-audit-group",
+            topics = "${app.kafka.topics.audit:tcg.audit.stream}",
+            groupId = "tcg-audit-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void consumeAuditRecord(
